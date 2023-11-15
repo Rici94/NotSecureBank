@@ -437,11 +437,17 @@ public class DBUtil {
     public static String addAccount(String username, String acctType) {
         LOG.debug("addAccount('" + username + "', '" + acctType + "')");
 
-        try {
-            Connection connection = getConnection();
-            Statement statement = connection.createStatement();
-            statement.execute("INSERT INTO ACCOUNTS (USERID,ACCOUNT_NAME,BALANCE) VALUES ('" + username + "','" + acctType + "', 0)");
-            return null;
+        try (Connection connection = getConnection()) {
+            String sql = "INSERT INTO ACCOUNTS (USERID, ACCOUNT_NAME, BALANCE) VALUES (?, ?, 0)";
+
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, username);
+                statement.setString(2, acctType);
+
+                statement.execute();
+
+                return null;
+            }
         } catch (SQLException e) {
             LOG.error(e.toString());
             return e.toString();

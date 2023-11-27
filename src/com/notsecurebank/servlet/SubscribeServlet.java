@@ -30,14 +30,15 @@ public class SubscribeServlet extends HttpServlet {
 
         String messageSubscribe = null;
         try {
-
+            // Always return a generic message, regardless of whether the email is registered or not
             String registeredUser = DBUtil.addSubscription(email);
-            if (registeredUser == null) {
-                messageSubscribe = "Thank you. Your email <em>" + email + "</em> has been accepted. You are not registered yet. Please <a href='locations.jsp'>search</a> for the Branch Office closest to you and ask them for an account.";
-            } else {
-                messageSubscribe = "Hello <em>" + registeredUser + "</em>! Your email <em>" + email + "</em> has been accepted. Please <a href='login.jsp'>sign in</a> to use our advanced banking features.";
-            }
+            messageSubscribe = "Thank you. Your email has been accepted. You will receive a confirmation email shortly.";
 
+            if (registeredUser != null) {
+                messageSubscribe += " If you are a registered user, please sign in to access our advanced banking features.";
+            } else {
+                messageSubscribe += " If you are not registered yet, please search for the Branch Office closest to you and ask them for an account.";
+            }
         } catch (Exception e) {
             messageSubscribe = "Unexpected error.";
         }

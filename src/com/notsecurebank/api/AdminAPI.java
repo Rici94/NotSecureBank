@@ -52,6 +52,11 @@ public class AdminAPI extends NotSecureBankAPI {
             return Response.status(500).entity("{\"Error\": \"Request is not in JSON format\"}").build();
         }
 
+        if (!DBUtil.isValidAdmin(ServletUtil.getUser(request).getUsername(), request.getParameter("passwd"))) {
+            LOG.error("This operation is allowed only for admin users.");
+            return Response.status(403).entity("{\"error\":\"This operation is allowed only for admin users.\"}").build();
+        }
+
         // Try to change the password
         if (username == null || username.trim().length() == 0 || password1 == null || password1.trim().length() == 0 || password2 == null || password2.trim().length() == 0) {
             LOG.error("Passed data null or empty for changePassword method.");
@@ -105,6 +110,11 @@ public class AdminAPI extends NotSecureBankAPI {
         } catch (JSONException e) {
             LOG.error(e.toString());
             return Response.status(500).entity("{\"Error\": \"Request is not in JSON format\"}").build();
+        }
+
+        if (!DBUtil.isValidAdmin(ServletUtil.getUser(request).getUsername(), request.getParameter("passwd"))) {
+            LOG.error("This operation is allowed only for admin users.");
+            return Response.status(403).entity("{\"error\":\"This operation is allowed only for admin users.\"}").build();
         }
 
         if (firstname == null || firstname.trim().length() == 0 || lastname == null || lastname.trim().length() == 0 || username == null || username.trim().length() == 0 || email == null || email.trim().length() == 0 || password1 == null || password1.trim().length() == 0 || password2 == null || password2.trim().length() == 0) {

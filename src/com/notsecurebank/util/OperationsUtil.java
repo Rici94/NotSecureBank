@@ -102,13 +102,14 @@ public class OperationsUtil {
     public static String sendFeedback(String name, String email, String subject, String comments) {
         LOG.debug("sendFeedback('" + name + "', '" + email + "', '" + subject + "', '" + comments + "')");
 
-        email = StringEscapeUtils.escapeSql(email);
-        subject = StringEscapeUtils.escapeSql(subject);
-        comments = StringEscapeUtils.escapeSql(comments);
+        // Sanitize user input
+        email = StringEscapeUtils.escapeSql(StringEscapeUtils.escapeHtml(email));
+        subject = StringEscapeUtils.escapeSql(StringEscapeUtils.escapeHtml(subject));
+        comments = StringEscapeUtils.escapeSql(StringEscapeUtils.escapeHtml(comments));
 
         long id = DBUtil.storeFeedback(name, email, subject, comments);
         return String.valueOf(id);
-
     }
+
 
 }

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -30,18 +31,26 @@ public class FeedbackServlet extends HttpServlet {
 
         String name = request.getParameter("name");
         if (name != null) {
+            // Sanitize user input
+            name = StringEscapeUtils.escapeHtml4(name);
             request.setAttribute("message_feedback", name);
+
             String email = request.getParameter("email_addr");
             String subject = request.getParameter("subject");
             String comments = request.getParameter("comments");
-            // store feedback in the DB - display their feedback once submitted
 
+            // Sanitize user input
+            email = StringEscapeUtils.escapeHtml4(email);
+            subject = StringEscapeUtils.escapeHtml4(subject);
+            comments = StringEscapeUtils.escapeHtml4(comments);
+
+            // store feedback in the DB - display their feedback once submitted
             String feedbackId = OperationsUtil.sendFeedback(name, email, subject, comments);
+
             if (feedbackId != null) {
                 LOG.info("feedbackId = '" + feedbackId + "'.");
                 request.setAttribute("feedback_id", feedbackId);
             }
-
         } else {
             LOG.error("Null name.");
             request.removeAttribute("name");
